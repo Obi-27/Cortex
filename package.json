@@ -1,0 +1,20 @@
+{
+  "name": "Cortex",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server/main.js -w src/server",
+    "start": "cross-env NODE_ENV=production node src/server/main.js",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10",
+    "vite": "^6.3.3"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "vite-express": "*",
+    "cross-env": "^7.0.3"
+  }
+}
