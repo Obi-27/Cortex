@@ -1,5 +1,5 @@
 import * as crud from "./crud.js"
-import path from "path"
+
 
 export default class fileManagerHandler {
     constructor(textAreaHandler) {
@@ -402,6 +402,7 @@ export default class fileManagerHandler {
 
 
     showInlineInput(parentUl, isFolder, parentPath) {
+        console.log('inout')
         if (this.fileTreeElement.querySelector('.inline-input')) return
 
         const li = document.createElement('li');
@@ -417,6 +418,7 @@ export default class fileManagerHandler {
 
         input.addEventListener('keydown', async (e) => {
             if(e.key === 'Enter') {
+                console.log('rename')
                 const name = input.value.trim()
                 if(!name) return
 
@@ -468,8 +470,9 @@ export default class fileManagerHandler {
 
         const submit = async() => {
             const newName = input.value.trim()
-
+            
             if(!newName) {
+                console.log('none')
                 cleanup()
                 return
             }
@@ -515,11 +518,14 @@ export default class fileManagerHandler {
         }
 
         const cleanup = () => {
-            input.remove()
+            input.remove() 
             tab.style.display = ''
         }
 
-        input.addEventListener('blur', cleanup)
+        input.addEventListener('blur', () => {
+            console.log(input)
+            cleanup()
+        })
 
         input.addEventListener('keydown', (e) => {
             if(e.key === 'Enter') submit()

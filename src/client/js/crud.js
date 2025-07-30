@@ -33,6 +33,7 @@ export async function deleteNote(filePath) {
     return response
 }
 
+
 export async function renameNote(filePath, name) {
     const body = {newName: name}
     const response = await axios.put(`${serverAddress}:${serverPort}/notes/renameNote/${filePath}`, body)
@@ -40,11 +41,11 @@ export async function renameNote(filePath, name) {
 }
 
 
-
 export async function createFolder(folderPath) {
     const response = await axios.post(`${serverAddress}:${serverPort}/folders/createFolder/${folderPath}`)
     return response
 }
+
 
 export async function deleteFolder(folderPath) {
     const response = await axios.delete(`${serverAddress}:${serverPort}/folders/deleteFolder/${folderPath}`)

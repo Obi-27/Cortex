@@ -1,13 +1,18 @@
 import express from "express";
 import ViteExpress from "vite-express";
-import dbConnect from "./database.js";
+import cors from "cors"
+
+import s3 from "./database.js";
+import routes from "./routes/index.js"
+
 
 const app = express();
-const s3 = new dbConnect().s3Connection
 
+app.use(cors())
+app.use(express.json())
+app.use('/', routes)
 
 app.get('/readAllFiles', async (req, res) => {
-  console.log('ha')
   try {
       const result = await s3.listObjectsV2({
           Bucket: 'notesbucket27'
