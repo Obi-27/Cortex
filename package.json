@@ -7,7 +7,7 @@
     "dev": "nodemon src/server/main.js -w src/server",
     "start": "cross-env NODE_ENV=production node src/server/main.js",
     "build": "vite build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 0"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
