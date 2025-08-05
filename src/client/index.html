@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Cortex - Scientific Note Taking Reimagined</title>
+    </head>
+    <body>
+        <script type="module" src="js/landing.js"></script>
+        <link rel="stylesheet" href="css/landing.css">
+        <header>
+        <nav class="container">
+            <div class="logo">Cortex</div>
+            <ul class="nav-links">
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <button id="login-btn" class="open-login">Sign In</button>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h1>Scientific Note Taking<br>Reimagined</h1>
+                    <p>Organize your research, connect ideas, and accelerate discovery with Cortex - the intelligent platform built for scientific minds.</p>
+                    <div class="cta-buttons">
+                        <button id="get-Started" class="btn-primary open-login">Get Started</button>
+                        <a href="#features" class="btn-secondary">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features" id="features">
+            <div class="container">
+                <h2 class="section-title">Powerful Features</h2>
+                <p class="section-subtitle">Everything you need to organize and connect your scientific knowledge</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h3>Intelligent Organization</h3>
+                        <p>AI-powered categorization and tagging helps you organize notes automatically, making it easy to find and connect related research.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔗</div>
+                        <h3>Knowledge Graphs</h3>
+                        <p>Visualize connections between concepts, papers, and ideas with interactive knowledge graphs that reveal hidden insights.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Data Integration</h3>
+                        <p>Seamlessly import and reference data from experiments, papers, and external sources all in one unified workspace.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>Fast Search</h3>
+                        <p>Lightning-fast full-text search across all your notes, with semantic understanding to find exactly what you're looking for.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>Collaboration</h3>
+                        <p>Share knowledge with your team, collaborate on projects, and build upon each other's research seamlessly.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure & Private</h3>
+                        <p>Your research stays protected with enterprise-grade security and privacy controls you can trust.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" >&times;</span>
+            <form class="login-form">
+                <h2>Welcome Back</h2>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-submit">Sign In</button>
+                <div class="signup-link">
+                    Don't have an account? <a href="#" onclick="showSignup()">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    </body>
+</html>
