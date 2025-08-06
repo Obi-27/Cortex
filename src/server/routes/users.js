@@ -49,15 +49,12 @@ router.post('/login', async (req, res) => {
         if(!existingUser) {
             return res.status(400).send({ message: 'Invalid Credentials' })
         }
-        console.log(existingUser)
 
         //compare passwords
         const passwordMatch = await bcrypt.compare(req.body.password, existingUser.password)
         if(!passwordMatch) {
             return res.status(401).send({ message: 'Invalid Password' })
-        } else{
-            console.log('pass match')
-        }
+        } 
 
         //generate JWT token
         const token = jwt.sign({ email: existingUser.email}, 'secret')
