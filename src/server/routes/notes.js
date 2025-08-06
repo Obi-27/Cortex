@@ -1,5 +1,5 @@
 import express from "express"
-import s3 from "../database.js";
+import { s3 } from "../database.js";
 
 
 const router = express.Router()

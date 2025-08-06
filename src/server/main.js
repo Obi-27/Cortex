@@ -1,14 +1,13 @@
-import express from "express";
-import ViteExpress from "vite-express";
+import express from "express"
+import ViteExpress from "vite-express"
 import cors from "cors"
 import path from "path"
-import { fileURLToPath } from "url";
+import { fileURLToPath } from "url"
 
-import s3 from "./database.js";
+import { s3 } from "./database.js"
 import routes from "./routes/index.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
 
 const app = express();
 

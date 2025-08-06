@@ -104,7 +104,9 @@ export default class textAreaHandler {
 
     renderMarkdownPreview() {
         const content = this.getContent()
-        const md = markdownit().use(markdownItKatex)
+        const md = markdownit({
+            html: true
+        }).use(markdownItKatex)
         this.previewPane.innerHTML = md.render(content)
     }
 
