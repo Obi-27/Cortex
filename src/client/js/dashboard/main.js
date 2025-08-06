@@ -1,6 +1,6 @@
-import splitterHandler from "../pageSplitter"
-import textAreaHandler from "../textArea"
-import fileManagerHandler from "../fileManager"
+import splitterHandler from "./pageSplitter.js"
+import textAreaHandler from "./textArea.js"
+import fileManagerHandler from "./fileManager.js"
 
 class eventHandler {
     constructor () {
