@@ -1,6 +1,6 @@
-import splitterHandler from "./js/pageSplitter"
-import textAreaHandler from "./js/textArea"
-import fileManagerHandler from "./js/fileManager"
+import splitterHandler from "../pageSplitter"
+import textAreaHandler from "../textArea"
+import fileManagerHandler from "../fileManager"
 
 class eventHandler {
     constructor () {
@@ -9,7 +9,6 @@ class eventHandler {
         this.fileManager = new fileManagerHandler(this.textArea)
         
     }
-
 }
 
 let handler = new eventHandler()
