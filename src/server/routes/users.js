@@ -57,12 +57,59 @@ router.post('/login', async (req, res) => {
         } 
 
         //generate JWT token
-        const token = jwt.sign({ email: existingUser.email}, 'secret')
-        console.log(token)
-        res.status(200).json({ token })
+        const accessToken = generateAccessToken(existingUser)
+        const refreshToken = jwt.sign(existingUser.email, process.env.REFRESH_TOKEN_SECRET)
+
+        refreshTokens.push(refreshToken)
+
+        res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken })
     } catch (error) {
         res.status(500).send({ message: `Internal Server Error: ${error}` })
     }
 })
+
+
+router.delete('/logout', (req, res) => {
+    
+})
+
+let refreshTokens = []
+
+router.post('/token', (req, res) => {
+    const refreshToken = req.body.token
+    
+    if(refreshToken == null) return res.status(401).send({ message: 'No token provided' })
+    if(!refreshTokens.includes(refreshToken)) return res.status(401).send({ message: 'Invalid token' })
+    
+    jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.stataus(401).send('Invalid Credentials')
+        const newAccessToken = generateAccessToken({ email: user.email })
+        res.status(402).send({ accessToken: newAccessToken })
+    })
+})
+
+
+router.get('/posts', authenticateToken, (req, res) => {
+    return res.status(200).send({ message: req.user })
+})
+
+function generateAccessToken(user) {
+    return jwt.sign({
+        email: user.email
+    }, process.env.AUTH_TOKEN_SECRET, {expiresIn: 20})
+}
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader &&  authHeader.split(' ')[1]
+
+    if (token == null) return res.status(401).send({ message: 'No token provided' })
+
+    jwt.verify(token, process.env.AUTH_TOKEN_SECRET, (err, user) => {
+        if (err) return res.status(400).send({ message: 'Unauthorized' })
+        req.user = user
+        next()
+    })
+}
 
 export default router
