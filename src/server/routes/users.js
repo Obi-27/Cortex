@@ -60,7 +60,13 @@ router.post('/login', async (req, res) => {
         const accessToken = generateAccessToken(existingUser)
         const refreshToken = jwt.sign(existingUser.email, process.env.REFRESH_TOKEN_SECRET)
 
+        //store refresh tokens
         refreshTokens.push(refreshToken)
+
+        res.cookie('refresh_token', refreshToken, {
+            httpOnly: true,
+            sameSite: 'strict'
+        })
 
         res.status(200).json({ accessToken: accessToken, refreshToken: refreshToken })
     } catch (error) {
@@ -70,12 +76,13 @@ router.post('/login', async (req, res) => {
 
 
 router.delete('/logout', (req, res) => {
-    
+    refreshTokens = refreshTokens.filter(token => token != req.body.token)
+    res.status(204).send({ message: 'succesfully logged out' })
 })
 
 let refreshTokens = []
 
-router.post('/token', (req, res) => {
+router.post('/refresh', (req, res) => {
     const refreshToken = req.body.token
     
     if(refreshToken == null) return res.status(401).send({ message: 'No token provided' })
@@ -83,6 +90,7 @@ router.post('/token', (req, res) => {
     
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
         if (err) return res.stataus(401).send('Invalid Credentials')
+
         const newAccessToken = generateAccessToken({ email: user.email })
         res.status(402).send({ accessToken: newAccessToken })
     })
