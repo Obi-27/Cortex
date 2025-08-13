@@ -88,19 +88,47 @@
             <form class="login-form">
                 <h2>Welcome Back</h2>
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter your email" required>
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" name="email" placeholder="Enter your email" required>
                 </div>
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="Enter your password" required>
                 </div>
-                <button type="submit" class="login-submit">Sign In</button>
+                <button id="login-submit" type="submit" class="form-submit">Sign In</button>
                 <div class="signup-link">
-                    Don't have an account? <a href="#" onclick="showSignup()">Sign up</a>
+                    Don't have an account? <a href="#register" class="open-register">Sign up</a>
                 </div>
             </form>
         </div>
     </div>
+
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form class="register-form">
+                <h2>Create Account</h2>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="regiser-email" name="email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-username">Username</label>
+                    <input type="text" id="register-username" name="username" placeholder="Choose a username" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" name="password" placeholder="Create a password" required>
+                </div>
+                <button id="register-submit" type="submit" class="form-submit">Sign Up</button>
+                <div class="login-link">
+                    Already have an account? <a href="#login" class="open-login">Sign in</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
     </body>
 </html>
