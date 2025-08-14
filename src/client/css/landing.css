@@ -313,7 +313,7 @@ nav {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.login-submit {
+.form-submit {
     width: 100%;
     background: linear-gradient(45deg, #4f46e5, #06b6d4);
     color: white;
@@ -327,7 +327,7 @@ nav {
     margin-bottom: 1rem;
 }
 
-.login-submit:hover {
+.form-submit:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
 }
@@ -338,6 +338,16 @@ nav {
 }
 
 .signup-link a {
+    color: #06b6d4;
+    text-decoration: none;
+}
+
+.login-link{
+    text-align: center;
+    opacity: 0.8;
+}
+
+.login-link a {
     color: #06b6d4;
     text-decoration: none;
 }
