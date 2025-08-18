@@ -3,7 +3,9 @@ import ViteExpress from "vite-express"
 import cors from "cors"
 import path from "path"
 import { fileURLToPath } from "url"
+import cookieParser from "cookie-parser"
 
+import { authenticateToken } from "./routes/users.js"
 import { s3 } from "./database.js"
 import routes from "./routes/index.js"
 
@@ -13,10 +15,11 @@ const app = express();
 
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 app.use(express.static(path.join(__dirname, '../../dist')))
 app.use('/', routes)
 
-app.get('/readAllFiles', async (req, res) => {
+app.get('/readAllFiles', authenticateToken, async (req, res) => {
   try {
       const result = await s3.listObjectsV2({
           Bucket: 'notesbucket27'
@@ -36,4 +39,3 @@ app.get('/dashboard', (req, res) => {
 ViteExpress.listen(app, 3000, () =>
   console.log("Server is listening on port 3000..."),
 );
- 

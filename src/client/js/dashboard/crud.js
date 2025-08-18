@@ -3,8 +3,28 @@ let serverPort = "3000"
 
 import axios from "axios"
 
+let accessToken = null
+
+export async function getAccessToken() {
+    if(!accessToken || accessToken === null) {
+        try {
+            const response = await axios.post(`${serverAddress}:${serverPort}/users/refresh`)
+            accessToken = response.data.accessToken
+        } catch (error) {
+            accessToken = null
+        }
+    } 
+    return accessToken
+}
+
+
 export async function getAllFiles() {
-    const response = await axios.get(`${serverAddress}:${serverPort}/readAllFiles`)
+    console.log('files token:', accessToken)
+    const response = await axios.get(`${serverAddress}:${serverPort}/readAllFiles`, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`
+        }
+    })
     return response.data
 }
 
@@ -23,6 +43,7 @@ export async function saveNote(filePath, content) {
 
 
 export async function createNote(filePath) {
+    console.log(accessToken)
     const response = await axios.post(`${serverAddress}:${serverPort}/notes/createNote/${filePath}`)
     return response
 }
