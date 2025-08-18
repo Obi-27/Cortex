@@ -402,7 +402,6 @@ export default class fileManagerHandler {
 
 
     showInlineInput(parentUl, isFolder, parentPath) {
-        console.log('inout')
         if (this.fileTreeElement.querySelector('.inline-input')) return
 
         const li = document.createElement('li');

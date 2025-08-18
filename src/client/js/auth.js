@@ -11,13 +11,13 @@ export async function login(userEmail, userPassword) {
         password: userPassword
     }
     const response = await axios.post(`${serverAddress}:${serverPort}/users/login`, body)
-    accessToken = response.data.accessToken
-}
+    .catch(error => {
+        console.error(error)
+        return
+    })
 
-async function loadDashboard(params) {
-    
-}
-
-export function getAccessToken() {
-    return accessToken
+    //load dashboard on succesful login
+    if(response.status == 200) {
+        window.location.href = `${serverAddress}:${serverPort}/dashboard` 
+    }
 }
