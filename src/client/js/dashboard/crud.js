@@ -3,19 +3,7 @@ let serverPort = "3000"
 
 import axios from "axios"
 
-let accessToken = null
 
-export async function getAccessToken() {
-    if(!accessToken || accessToken === null) {
-        try {
-            const response = await axios.post(`${serverAddress}:${serverPort}/users/refresh`)
-            accessToken = response.data.accessToken
-        } catch (error) {
-            accessToken = null
-        }
-    } 
-    return accessToken
-}
 
 
 export async function getAllFiles() {

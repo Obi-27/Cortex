@@ -15,7 +15,6 @@ export default class splitterHandler {
         this.splitter.addEventListener('mousedown', () => {
             this.isDragging = true
             document.body.style.cursor = 'col-resize'
-            console.log('a')
         })
 
         document.addEventListener('mouseup', () => {
