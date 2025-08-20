@@ -79,7 +79,12 @@ router.post('/login', async (req, res) => {
 
 router.delete('/logout', (req, res) => {
     refreshTokens = refreshTokens.filter(token => token != req.cookies.refresh_token)
-    console.log(refreshTokens)
+    res.clearCookie('refresh_token', {
+        httpOnly: true,
+        sameSite: 'strict',
+        secure: true,
+        path: '/users'
+    })
     res.status(204).send({ message: 'succesfully logged out' })
 })
 

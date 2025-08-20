@@ -6,95 +6,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
   </head>
-  <body>
-    <script type="module" src="js/dashboard/main.js"></script>
-    <link rel="stylesheet" href = css/dashboard.css>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
+    <body>
+        <script type="module" src="js/dashboard/main.js"></script>
+        <link rel="stylesheet" href="css/dashboard.css">
+        <link rel="stylesheet" href="css/navbar.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css">
 
-    <div class="container-fluid navigation-bar">
-                <div id="sidebar-manager">
-                    <a class="brand" href="#">Brand</a>
-                    
-                    <button type="button" class="nav-icon">
-                        <img src="/src/img/folder_icon_white.png" alt="Icon" class="img-fluid">
-                    </button>
-
-                    <button type="button" class="nav-icon">
-                        <img src="/src/img/search_icon_white.png" alt="Icon" class="img-fluid">
-                    </button>
-                </div>
-
-                <div id="tab-bar">
-
-                </div>
-            </div>  
-
-
-
-            <div id="page-content">
+        <div class="container-fluid navigation-bar">
+            <div id="sidebar-manager">
+                <a class="brand" href="#">Brand</a>
                 
-                <div class="row-div">
-                    <div class="col-div" id="sidebar">
-                        <div class="row" id="sidebar-header">
-                            
-                            <div class="col-sm" style=" display: flex; justify-content: center;">
-                                <button type="button" class="nav-icon" id="create-file-btn">
-                                    <img src="/src/img/newNote_icon_white.png" alt="Icon" class="img-fluid">
-                                </button>
-                            </div>
+                <button type="button" class="nav-icon">
+                    <img src="/src/img/folder_icon_white.png" alt="Icon" class="img-fluid">
+                </button>
 
-                            <div class="col-sm" style="display: flex; justify-content: center;">
-                                <button type="button" class="nav-icon" id="create-folder-btn">
-                                    <img src="/src/img/newFolder_icon_white.png" alt="Icon" class="img-fluid">
-                                </button>
-                            </div>
+                <button type="button" class="nav-icon">
+                    <img src="/src/img/search_icon_white.png" alt="Icon" class="img-fluid">
+                </button>
+            </div>
 
-                        </div>
-                        
-                        <div id="fileTree-Tab">
-                            <ul id="fileTree-List">
+            <div id="tab-bar"></div>
 
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div id="page-splitter" class="splitter-div"></div>
-
-                    <div class="col-div col-div-flex" id="content-pane">
-                        <div id="editor-menu">
-                            <button id="editor-view-btn" class="nav-icon">📝</button>
-                            <button id="preview-view-btn" class="nav-icon">👁️</button>
-                            <button id="split-view-btn" class="nav-icon">📝👁️</button>
-                        </div>
-
-                        <div id="editor-split-container" style="display: flex; flex: 1;">
-                            <div id="text-editor">
-                               
-                            </div>
-
-                            <div id="preview-pane" style="display: none;">
-                               
-                            </div>
-                        </div>
-
-                        
-                    </div>
+            <!-- User menu section -->
+            <div id="user-menu">
+                <button id="user-button">👤</button>
+                <div class="dropdown" id="user-dropdown">
+                    <a id="user-profile-button" href="#">Profile</a>
+                    <a id="user-settings-button" href="#">Settings</a>
+                    <a id="user-logout-button" href="#">Logout</a>
                 </div>
             </div>
-        
 
-        <!-- KaTeX for math -->
-        
+        </div>  
 
 
+
+        <div id="page-content">  
+            <div class="row-div">
+                <div class="col-div" id="sidebar">
+                    <div class="row" id="sidebar-header">
+                        
+                        <div class="col-sm" style=" display: flex; justify-content: center;">
+                            <button type="button" class="nav-icon" id="create-file-btn">
+                                <img src="/src/img/newNote_icon_white.png" alt="Icon" class="img-fluid">
+                            </button>
+                        </div>
+
+                        <div class="col-sm" style="display: flex; justify-content: center;">
+                            <button type="button" class="nav-icon" id="create-folder-btn">
+                                <img src="/src/img/newFolder_icon_white.png" alt="Icon" class="img-fluid">
+                            </button>
+                        </div>
+
+                    </div>
+                    
+                    <div id="fileTree-Tab">
+                        <ul id="fileTree-List">
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="page-splitter" class="splitter-div"></div>
+
+                <div class="col-div col-div-flex" id="content-pane">
+                    <div id="editor-menu">
+                        <button id="editor-view-btn" class="nav-icon">📝</button>
+                        <button id="preview-view-btn" class="nav-icon">👁️</button>
+                        <button id="split-view-btn" class="nav-icon">📝👁️</button>
+                    </div>
+
+                    <div id="editor-split-container" style="display: flex; flex: 1;">
+                        <div id="text-editor">
+                            
+                        </div>
+
+                        <div id="preview-pane" style="display: none;">
+                            
+                        </div>
+                    </div>
+
+                    
+                </div>
+            </div>
+        </div>
         
+
+        <!-- KaTeX for math -->        
         <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-
         <ul id="context-menu" class="context-menu">
 
         </ul>
-  </body>
+    </body>
 </html>

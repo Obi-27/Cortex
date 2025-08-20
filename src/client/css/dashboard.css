@@ -93,12 +93,6 @@ li.file-list {
     background-color: #666e78;
 }
 
-.navigation-bar {
-    color: white;
-    background-color: #2a2b2c;
-    display: flex;
-    flex-direction: row;
-}
 
 .brand {
     background-color: #2a2b2c;
@@ -221,7 +215,7 @@ li.file-list {
     border: 1px solid #ccc;
     border-radius: 6px;
     margin: 4px 0;
-    animation: fadeIn 0.2s ease-out;
+    animation: fadeIn 0.01s ease-out;
 }
 
 @keyframes fadeIn {
@@ -310,7 +304,7 @@ li.file-list {
 #tab-bar {
     display: flex;
     gap: 4px;
-    background: #222;
+    background: none;
     padding: 5px;
 }
 
