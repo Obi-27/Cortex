@@ -1,9 +1,10 @@
 import express from 'express'
 import { s3 } from '../database.js'
+import { authenticateToken } from './users.js'
 
 const router = express.Router()
 
-router.get('/readNote/*filePath', async (req, res) => {
+router.get('/readNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -22,7 +23,7 @@ router.get('/readNote/*filePath', async (req, res) => {
   }
 })
 
-router.put('/updateNote/*filePath', async (req, res) => {
+router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
 
   if (filePath[filePath.length - 1] === '') {
@@ -64,8 +65,9 @@ router.put('/updateNote/*filePath', async (req, res) => {
   }
 })
 
-router.post('/createNote/*filePath', async (req, res) => {
+router.post('/createNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
+  const username = req.user.username
 
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -74,7 +76,7 @@ router.post('/createNote/*filePath', async (req, res) => {
   try {
     await s3.putObject({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/'),
+      Key: username + '/' + filePath.join('/'),
       Body: ' '
     })
 
@@ -84,7 +86,7 @@ router.post('/createNote/*filePath', async (req, res) => {
   }
 })
 
-router.delete('/deleteNote/*filePath', async (req, res) => {
+router.delete('/deleteNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
 
   if (filePath[filePath.length - 1] === '') {
@@ -103,7 +105,7 @@ router.delete('/deleteNote/*filePath', async (req, res) => {
   }
 })
 
-router.put('/renameNote/*filePath', async (req, res) => {
+router.put('/renameNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
   const newName = req.body.newName
   const newPath = filePath.slice(0, filePath.length - 1).join('/') + '/' + newName
