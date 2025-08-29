@@ -6,6 +6,8 @@ const router = express.Router()
 
 router.get('/readNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
+  const username = req.user.username + '/'
+
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
   }
@@ -13,7 +15,7 @@ router.get('/readNote/*filePath', authenticateToken, async (req, res) => {
   try {
     const result = await s3.getObject({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/')
+      Key: username + filePath.join('/')
     })
 
     const str = await result.Body.transformToString()
@@ -25,6 +27,7 @@ router.get('/readNote/*filePath', authenticateToken, async (req, res) => {
 
 router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
+  const username = req.user.username + '/'
 
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -35,7 +38,7 @@ router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
   try {
     const parentCheck = await s3.listObjectsV2({
       Bucket: 'notesbucket27',
-      Prefix: parentPath,
+      Prefix: username + parentPath,
       MaxKeys: 1
     })
 
@@ -45,7 +48,7 @@ router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
 
     const folderExists = await s3.listObjectsV2({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/'),
+      Key: username + filePath.join('/'),
       MaxKeys: 1
     })
 
@@ -55,7 +58,7 @@ router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
 
     await s3.putObject({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/'),
+      Key: username + filePath.join('/'),
       Body: req.body.fileContent
     })
 
@@ -67,7 +70,7 @@ router.put('/updateNote/*filePath', authenticateToken, async (req, res) => {
 
 router.post('/createNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
-  const username = req.user.username
+  const username = req.user.username + '/'
 
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -76,7 +79,7 @@ router.post('/createNote/*filePath', authenticateToken, async (req, res) => {
   try {
     await s3.putObject({
       Bucket: 'notesbucket27',
-      Key: username + '/' + filePath.join('/'),
+      Key: username + filePath.join('/'),
       Body: ' '
     })
 
@@ -88,6 +91,7 @@ router.post('/createNote/*filePath', authenticateToken, async (req, res) => {
 
 router.delete('/deleteNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
+  const username = req.user.username + '/'
 
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -96,7 +100,7 @@ router.delete('/deleteNote/*filePath', authenticateToken, async (req, res) => {
   try {
     await s3.deleteObject({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/')
+      Key: username + filePath.join('/')
     })
 
     return res.status(200).send({ message: `The object "${filePath.join('/')}" from bucket "notesbucket27" was deleted, or it didn't exist.` })
@@ -109,6 +113,7 @@ router.put('/renameNote/*filePath', authenticateToken, async (req, res) => {
   const filePath = req.params.filePath
   const newName = req.body.newName
   const newPath = filePath.slice(0, filePath.length - 1).join('/') + '/' + newName
+  const username = req.user.username + '/'
 
   if (filePath[filePath.length - 1] === '') {
     return res.status(403).send({ message: 'A note\'s path cannot end in \'/\' ' })
@@ -121,13 +126,13 @@ router.put('/renameNote/*filePath', authenticateToken, async (req, res) => {
   try {
     await s3.copyObject({
       Bucket: 'notesbucket27',
-      CopySource: `notesbucket27/${filePath.join('/')}`,
-      Key: newPath
+      CopySource: `notesbucket27/${username}${filePath.join('/')}`,
+      Key: username + newPath
     })
 
     await s3.deleteObject({
       Bucket: 'notesbucket27',
-      Key: filePath.join('/')
+      Key: username + filePath.join('/')
     })
 
     return res.status(200).send({ message: `Renamed note ${filePath.join('/')} to ${newPath}` })

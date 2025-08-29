@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.post('/createFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
+  const username = req.user.username + '/'
 
   if (!(folderPath[folderPath.length - 1] === '')) {
     return res.status(403).send({ message: 'A folders\'s path must end in \'/\' ' })
@@ -14,7 +15,7 @@ router.post('/createFolder/*folderPath', authenticateToken, async (req, res) => 
   try {
     await s3.putObject({
       Bucket: 'notesbucket27',
-      Key: folderPath.join('/'),
+      Key: username + folderPath.join('/'),
       Body: ''
     })
 
@@ -26,6 +27,7 @@ router.post('/createFolder/*folderPath', authenticateToken, async (req, res) => 
 
 router.delete('/deleteFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
+  const username = req.user.username + '/'
 
   if (!(folderPath[folderPath.length - 1] === '')) {
     return res.status(403).send({ message: 'A folders\'s path must end in \'/\' ' })
@@ -34,8 +36,9 @@ router.delete('/deleteFolder/*folderPath', authenticateToken, async (req, res) =
   try {
     const listedObjects = await s3.listObjectsV2({
       Bucket: 'notesbucket27',
-      Prefix: folderPath.join('/')
+      Prefix: username + folderPath.join('/')
     })
+    console.log(listedObjects)
     if (!listedObjects.Contents || listedObjects.Contents.length === 0) {
       return res.status(401).send({ message: `Folder ${folderPath.join('/')} does not exist, or it is already empty` })
     }
@@ -61,6 +64,7 @@ router.delete('/deleteFolder/*folderPath', authenticateToken, async (req, res) =
 router.put('/renameFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
   const newFolderName = req.body.newName
+  const username = req.user.username + '/'
 
   const parentPath = folderPath.slice(0, folderPath.length - 2).join('/') + '/'
   const newPath = parentPath === '/' ? newFolderName + '/' : parentPath + newFolderName + '/'
@@ -76,7 +80,7 @@ router.put('/renameFolder/*folderPath', authenticateToken, async (req, res) => {
   try {
     const newFolderCheck = await s3.listObjectsV2({
       Bucket: 'notesbucket27',
-      Prefix: newPath,
+      Prefix: username + newPath,
       MaxKeys: 1
     })
 
@@ -87,7 +91,7 @@ router.put('/renameFolder/*folderPath', authenticateToken, async (req, res) => {
 
     const listedObjects = await s3.listObjectsV2({
       Bucket: 'notesbucket27',
-      Prefix: folderPath.join('/')
+      Prefix: username + folderPath.join('/')
     })
 
     for (const obj of listedObjects.Contents) {

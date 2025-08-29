@@ -140,7 +140,7 @@ export default class FileManagerHandler {
     const root = {}
 
     fileList.forEach(item => {
-      const pathParts = item.Key.split('/')
+      const pathParts = item.Key.split('/').slice(1)
       let current = root
 
       for (let i = 0; i < pathParts.length; i++) {
