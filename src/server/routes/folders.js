@@ -1,9 +1,10 @@
 import express from 'express'
 import { s3 } from '../database.js'
+import { authenticateToken } from './users.js'
 
 const router = express.Router()
 
-router.post('/createFolder/*folderPath', async (req, res) => {
+router.post('/createFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
 
   if (!(folderPath[folderPath.length - 1] === '')) {
@@ -23,7 +24,7 @@ router.post('/createFolder/*folderPath', async (req, res) => {
   }
 })
 
-router.delete('/deleteFolder/*folderPath', async (req, res) => {
+router.delete('/deleteFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
 
   if (!(folderPath[folderPath.length - 1] === '')) {
@@ -57,7 +58,7 @@ router.delete('/deleteFolder/*folderPath', async (req, res) => {
   }
 })
 
-router.put('/renameFolder/*folderPath', async (req, res) => {
+router.put('/renameFolder/*folderPath', authenticateToken, async (req, res) => {
   const folderPath = req.params.folderPath
   const newFolderName = req.body.newName
 

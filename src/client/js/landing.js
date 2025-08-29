@@ -40,7 +40,6 @@ class LandingPageHandler {
       const password = document.getElementById('login-password').value
 
       // Here you would typically send the credentials to your backend
-      console.log('Login attempt:', { email, password })
       auth.login(email, password)
       // alert('Login functionality would authenticate user and redirect to dashboard')
       this.closeModal()

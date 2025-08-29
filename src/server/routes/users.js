@@ -56,7 +56,7 @@ router.post('/login', async (req, res) => {
     }
 
     // generate JWT token
-    const refreshToken = jwt.sign(existingUser.email, process.env.REFRESH_TOKEN_SECRET)
+    const refreshToken = jwt.sign({email: existingUser.email, username: existingUser.username}, process.env.REFRESH_TOKEN_SECRET)
 
     // store refresh tokens
     refreshTokens.push(refreshToken)
@@ -96,7 +96,7 @@ router.post('/refresh', (req, res) => {
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.stataus(401).send({ message: 'Invalid Credentials' })
 
-    const newAccessToken = generateAccessToken({ email: user.email })
+    const newAccessToken = generateAccessToken({ email: user.email, username: user.username })
     res.status(200).send({ accessToken: newAccessToken })
   })
 })
@@ -107,13 +107,13 @@ router.get('/posts', authenticateToken, (req, res) => {
 
 function generateAccessToken (user) {
   return jwt.sign({
-    email: user.email
-  }, process.env.AUTH_TOKEN_SECRET, { expiresIn: 20 })
+    email: user.email,
+		username: user.username
+  }, process.env.AUTH_TOKEN_SECRET, { expiresIn: '1h' })
 }
 
 export function authenticateToken (req, res, next) {
   const authHeader = req.headers.authorization
-  console.log(authHeader)
   const token = authHeader && authHeader.split(' ')[1]
 
   if (token == null) return res.status(401).send({ message: 'No token provided' })
