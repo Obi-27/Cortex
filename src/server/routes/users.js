@@ -41,7 +41,7 @@ router.post('/register', async (req, res) => {
     await newUser.save()
 		
 		// log user in after succesful registration
-		const refreshToken = jwt.sign({email: existingUser.email, username: existingUser.username}, process.env.REFRESH_TOKEN_SECRET)
+		const refreshToken = jwt.sign({email: req.body.email, username: req.body.username}, process.env.REFRESH_TOKEN_SECRET)
 		
 		refreshTokens.push(refreshToken)
 		
@@ -54,6 +54,7 @@ router.post('/register', async (req, res) => {
 
     return res.status(200).send({ message: 'User registered successfully' })
   } catch (error) {
+		console.error(error)
     return res.status(500).send({ message: 'Internal Server Error' })
   }
 })
