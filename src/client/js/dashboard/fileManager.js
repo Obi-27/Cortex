@@ -138,7 +138,7 @@ export default class FileManagerHandler {
 
   buildFileTree (fileList) {
     const root = {}
-
+    if(!fileList) return
     fileList.forEach(item => {
       const pathParts = item.Key.split('/').slice(1)
       let current = root

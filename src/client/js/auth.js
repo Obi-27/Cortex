@@ -22,6 +22,7 @@ export async function login (userEmail, userPassword) {
     email: userEmail,
     password: userPassword
   }
+
   const response = await axios.post(`${serverAddress}:${serverPort}/users/login`, body).catch(error => {
     console.error(error)
   })
@@ -33,6 +34,25 @@ export async function login (userEmail, userPassword) {
 }
 
 export async function logout () {
+  localStorage.clear()
   await axios.delete(`${serverAddress}:${serverPort}/users/logout`)
   accessToken = null
+}
+
+export async function register (userEmail, userPassword, username) {
+  const body = {
+    email: userEmail,
+    password: userPassword,
+    username: username
+  }
+
+  try{
+    const response = await axios.post(`${serverAddress}:${serverPort}/users/register`, body)
+
+    if (response.status === 200) {
+      window.location.href = `${serverAddress}:${serverPort}/dashboard`
+    }
+  } catch (error) {
+    console.error(error)
+  }
 }

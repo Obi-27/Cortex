@@ -39,9 +39,17 @@ class LandingPageHandler {
       const email = document.getElementById('login-email').value
       const password = document.getElementById('login-password').value
 
-      // Here you would typically send the credentials to your backend
       auth.login(email, password)
-      // alert('Login functionality would authenticate user and redirect to dashboard')
+      this.closeModal()
+    })
+
+    document.querySelector('.register-form').addEventListener('submit', (e) => {
+      e.preventDefault()
+      const email = document.getElementById('register-email').value
+      const password = document.getElementById('register-password').value
+      const username = document.getElementById('register-username').value
+
+      auth.register(email, password, username)
       this.closeModal()
     })
 
