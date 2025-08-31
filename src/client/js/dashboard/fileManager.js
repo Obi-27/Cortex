@@ -127,6 +127,7 @@ export default class FileManagerHandler {
 
   async initializeFiles () {
     let fileTree = JSON.parse(localStorage.getItem('root'))
+
     if (!fileTree) {
       const filesList = await crud.getAllFiles()
       fileTree = this.buildFileTree(filesList)
@@ -138,7 +139,7 @@ export default class FileManagerHandler {
 
   buildFileTree (fileList) {
     const root = {}
-
+    if (!fileList) return root
     fileList.forEach(item => {
       const pathParts = item.Key.split('/').slice(1)
       let current = root

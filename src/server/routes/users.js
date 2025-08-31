@@ -22,21 +22,39 @@ const router = express.Router()
 
 router.post('/register', async (req, res) => {
   try {
+		// check if user with email already exists
     const existingUser = await User.findOne({ email: req.body.email })
     if (existingUser) {
       return res.status(400).send({ message: 'Email already exists' })
     }
 
+		// generate hashed password
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    const newUser = new User({
+    
+		// save user
+		const newUser = new User({
       username: req.body.username,
       email: req.body.email,
       password: hashedPassword
     })
 
     await newUser.save()
+		
+		// log user in after succesful registration
+		const refreshToken = jwt.sign({email: req.body.email, username: req.body.username}, process.env.REFRESH_TOKEN_SECRET)
+		
+		refreshTokens.push(refreshToken)
+		
+		res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      sameSite: 'strict',
+      secure: true,
+      path: '/users'
+    })
+
     return res.status(200).send({ message: 'User registered successfully' })
   } catch (error) {
+		console.error(error)
     return res.status(500).send({ message: 'Internal Server Error' })
   }
 })
@@ -57,7 +75,7 @@ router.post('/login', async (req, res) => {
 
     // generate JWT token
     const refreshToken = jwt.sign({email: existingUser.email, username: existingUser.username}, process.env.REFRESH_TOKEN_SECRET)
-
+		
     // store refresh tokens
     refreshTokens.push(refreshToken)
 
@@ -75,14 +93,18 @@ router.post('/login', async (req, res) => {
 })
 
 router.delete('/logout', (req, res) => {
+	// remove refresh token from memory
   refreshTokens = refreshTokens.filter(token => token !== req.cookies.refresh_token)
-  res.clearCookie('refresh_token', {
+  
+	//clear refresh token from user cookies
+	res.clearCookie('refresh_token', {
     httpOnly: true,
     sameSite: 'strict',
     secure: true,
     path: '/users'
   })
-  res.status(204).send({ message: 'succesfully logged out' })
+  
+	res.status(204).send({ message: 'succesfully logged out' })
 })
 
 let refreshTokens = []

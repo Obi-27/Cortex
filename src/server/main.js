@@ -20,11 +20,12 @@ app.use(express.static(path.join(__dirname, '../../dist')))
 app.use('/', routes)
 
 app.get('/readAllFiles', authenticateToken, async (req, res) => {
-  const username = req.user.username
+  const username = req.user.username + '/'
 
   try {
     const result = await s3.listObjectsV2({
-      Bucket: 'notesbucket27'
+      Bucket: 'notesbucket27',
+      Prefix: username
     })
 
     res.status(200).json(result.Contents)
