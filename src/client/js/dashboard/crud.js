@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { getAccessToken } from '../auth'
 
-const serverAddress = 'http://127.0.0.1'
-const serverPort = '3000'
+const serverAddress = process.env.SERVER_ADDRESS
+const serverPort = process.env.SERVER_PORT
 
 export async function getAllFiles () {
   const accessToken = await getAccessToken()
