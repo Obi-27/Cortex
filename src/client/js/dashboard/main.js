@@ -4,8 +4,8 @@ import FileManagerHandler from './fileManager.js'
 import NavbarHandler from './navbar.js'
 import { getAccessToken } from '../auth.js'
 
-const serverAddress = process.env.SERVER_ADDRESS
-const serverPort = process.env.SERVER_PORT
+const serverAddress = process.env.VITE_SERVER_ADDRESS
+const serverPort = process.env.VITE_SERVER_PORT
 
 class EventHandler {
   constructor () {

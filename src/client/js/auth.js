@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-const serverAddress = process.env.SERVER_ADDRESS
-const serverPort = process.env.SERVER_PORT
+const serverAddress = process.env.VITE_SERVER_ADDRESS
+const serverPort = process.env.VITE_SERVER_PORT
 
 export let accessToken = null
 
