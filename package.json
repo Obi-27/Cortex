@@ -17,6 +17,6 @@
   "scripts": {
     "lint": "exit 0",
     "typecheck": "exit 0",
-    "test": "no test specified\" && exit 0"
+    "test": "exit 0"
   }
 }
