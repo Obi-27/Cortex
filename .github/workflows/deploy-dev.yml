@@ -29,12 +29,12 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-          cd infra && npm ci
+          cd cdk && npm ci
 
       - name: CDK Diff
-        working-directory: infra
+        working-directory: cdk
         run: npx cdk diff -c env=dev
 
       - name: CDK Deploy (Dev)
-        working-directory: infra
+        working-directory: cdk
         run: npx cdk deploy -c env=dev --require-approval never
