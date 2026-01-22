@@ -12,7 +12,6 @@ export class NotesBucket extends Construct {
     super(scope, id);
 
     this.bucket = new s3.Bucket(this, 'NotesBucket', {
-      bucketName: props.bucketName,
       versioned : true,
       encryption: s3.BucketEncryption.S3_MANAGED,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
