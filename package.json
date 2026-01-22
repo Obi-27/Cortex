@@ -1,0 +1,22 @@
+{
+  "name": "cortex",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/Obi-27/Cortex#readme",
+  "bugs": {
+    "url": "https://github.com/Obi-27/Cortex/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Obi-27/Cortex.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "lint": "exit 0",
+    "typecheck": "exit 0",
+    "test": "no test specified\" && exit 0"
+  }
+}
