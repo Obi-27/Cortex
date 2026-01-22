@@ -23,7 +23,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::961341533599:role/GitHubCdkDeployRole
+          role-to-assume: arn:aws:iam::961341533599:role/GitHubActionsCdkRole
           aws-region: us-east-1
 
       - name: Install dependencies
