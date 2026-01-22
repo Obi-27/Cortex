@@ -1,0 +1,41 @@
+name: Deploy Prod
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::961341533599:role/GitHubCdkDeployRole
+          aws-region: us-east-1
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          cd infra && npm ci
+
+      - name: CDK Diff
+        working-directory: infra
+        run: npx cdk diff -c env=prod
+
+      - name: CDK Deploy (Prod)
+        working-directory: infra
+        run: npx cdk deploy -c env=prod --require-approval never
