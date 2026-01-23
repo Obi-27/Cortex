@@ -2,6 +2,7 @@ import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { NotesBucket } from './constructs/notes-bucket';
 import { NotesLambda } from './constructs/notes-lambda';
+import { NotesApi } from './constructs/notes-api';
 
 export class InfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
@@ -22,8 +23,13 @@ export class InfraStack extends cdk.Stack {
       bucketName: envConfig.bucketName,
     });
 
-    new NotesLambda(this, 'NotesLambda', {
+    const notesLambda =new NotesLambda(this, 'NotesLambda', {
       notesBucket: notesBucket.bucket,
+      environment,
+    });
+
+    const notesApi = new NotesApi(this, 'NotesApi', {
+      notesLambda: notesLambda.fn,
       environment,
     });
   }
