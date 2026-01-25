@@ -20,11 +20,12 @@ export class NotesLambda extends Construct {
       throw new Error('repoRoot context is missing');
     }
 
+    const entryFile = path.join(repoRoot, 'app/backend/index.ts');
+
     this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
-      projectRoot: path.resolve(repoRoot),
       handler: 'handler',
-      entry:'app/backend/index.ts',
+      entry: entryFile,
       bundling: {
         format: OutputFormat.ESM,
         target: 'node24',
