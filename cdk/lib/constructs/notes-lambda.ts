@@ -1,4 +1,5 @@
 import { Construct } from 'constructs';
+import { NodejsFunction, OutputFormat } from 'aws-cdk-lib/aws-lambda-nodejs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as path from 'path';
 import * as s3 from 'aws-cdk-lib/aws-s3';
@@ -14,12 +15,14 @@ export class NotesLambda extends Construct {
   constructor(scope: Construct, id: string, props: NotesLambdaProps) {
     super(scope, id);
 
-    this.fn = new lambda.Function(this, 'Function', {
+    this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
-      handler: 'index.handler',
-      code: lambda.Code.fromAsset(
-        path.join(__dirname, '../../../app/backend/dist')
-      ),
+      handler: 'handler',
+      entry: path.join(__dirname, '../../../app/backend/index.ts'),
+      bundling: {
+        format: OutputFormat.ESM,
+        target: 'node20',
+      },
       environment: {
         NOTES_BUCKET_NAME: props.notesBucket.bucketName,
         ENVIRONMENT: props.environment,
