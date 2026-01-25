@@ -15,13 +15,21 @@ export class NotesLambda extends Construct {
   constructor(scope: Construct, id: string, props: NotesLambdaProps) {
     super(scope, id);
 
+    const repoRoot = this.node.tryGetContext('repoRoot');
+    if (!repoRoot) {
+      throw new Error('repoRoot context is missing');
+    }
+
+    const entryFile = path.join(repoRoot, 'app/backend/index.ts');
+
     this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
+      projectRoot: path.resolve(repoRoot),
       handler: 'handler',
-      entry: path.join(__dirname, '../../../app/backend/index.ts'),
+      entry: entryFile,
       bundling: {
         format: OutputFormat.ESM,
-        target: 'node20',
+        target: 'node24',
       },
       environment: {
         NOTES_BUCKET_NAME: props.notesBucket.bucketName,

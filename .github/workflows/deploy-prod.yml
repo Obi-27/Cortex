@@ -32,9 +32,6 @@ jobs:
           npm ci
           cd infra && npm ci
           cd ./../app/backend && npm ci
-        
-      - name: Build
-        run: npm run build
 
       - name: CDK Diff
         working-directory: infra
