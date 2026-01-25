@@ -31,6 +31,9 @@ jobs:
           npm ci
           cd cdk && npm ci
 
+      - name: Build
+        run: npm run build
+
       - name: CDK Diff
         working-directory: cdk
         run: npx cdk diff -c env=dev
