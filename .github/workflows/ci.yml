@@ -32,9 +32,6 @@ jobs:
       - name: Tests
         run: npm test
 
-      - name: Build
-        run: npm run build
-
       - name: CDK Synth
         working-directory: cdk
         run: npx cdk synth
