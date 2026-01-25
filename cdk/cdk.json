@@ -16,8 +16,8 @@
       "test"
     ]
   },
-  "repoRoot": "..",
   "context": {
+    "repoRoot": "..",
     "env": "dev",
     "dev": {
       "bucketName": "cortex-notes-dev"
