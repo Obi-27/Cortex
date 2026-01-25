@@ -18,7 +18,7 @@ export class NotesLambda extends Construct {
     this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handler',
-      entry: path.join(__dirname, '../../../app/backend/index.ts'),
+      entry: path.resolve(process.cwd(), 'app/backend/index.ts'),
       bundling: {
         format: OutputFormat.ESM,
         target: 'node20',
