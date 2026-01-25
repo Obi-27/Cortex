@@ -3,6 +3,9 @@ import type { Handler } from '../types';
 export const getNotes: Handler = async () => {
   return {
     statusCode: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ notes: [] }),
   };
 };
@@ -12,6 +15,9 @@ export const createNote: Handler = async (event) => {
 
   return {
     statusCode: 201,
+     headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ note: body }),
   };
 };
@@ -21,6 +27,9 @@ export const getNoteById: Handler = async (event) => {
 
   return {
     statusCode: 200,
+     headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ id }),
   };
 };
@@ -31,6 +40,9 @@ export const updateNote: Handler = async (event) => {
 
   return {
     statusCode: 200,
+     headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify({ id, updates: body }),
   };
 };
@@ -40,6 +52,9 @@ export const deleteNote: Handler = async (event) => {
 
   return {
     statusCode: 204,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: '',
   };
 };

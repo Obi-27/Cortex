@@ -40,6 +40,9 @@ export async function route(
   if (!handler) {
     return {
       statusCode: 404,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: 'Route not found' }),
     };
   }
@@ -50,6 +53,9 @@ export async function route(
     console.error(error);
     return {
       statusCode: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ message: 'Internal server error' }),
     };
   }
