@@ -24,6 +24,7 @@ export class NotesLambda extends Construct {
 
     this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
+      projectRoot: path.resolve(repoRoot),
       handler: 'handler',
       entry: entryFile,
       bundling: {
