@@ -18,10 +18,10 @@ export class NotesLambda extends Construct {
     this.fn = new NodejsFunction(this, 'Function', {
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'handler',
-      entry: path.resolve(process.cwd(), 'app/backend/index.ts'),
+      entry: path.resolve(process.cwd(), '../app/backend/index.ts'),
       bundling: {
         format: OutputFormat.ESM,
-        target: 'node20',
+        target: 'node24',
       },
       environment: {
         NOTES_BUCKET_NAME: props.notesBucket.bucketName,
