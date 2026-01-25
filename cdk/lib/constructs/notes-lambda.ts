@@ -18,7 +18,7 @@ export class NotesLambda extends Construct {
       runtime: lambda.Runtime.NODEJS_24_X,
       handler: 'index.handler',
       code: lambda.Code.fromAsset(
-        path.join(__dirname, '../../../app/backend')
+        path.join(__dirname, '../../../app/backend/dist')
       ),
       environment: {
         NOTES_BUCKET_NAME: props.notesBucket.bucketName,
