@@ -12,10 +12,10 @@ import {
 type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
 
 const routes: Record<string, Handler> = {
-  'GET /v1/notes': listNotes,
-  'GET /v1/notes/{id}': getNote,
-  'PUT /v1/notes/{id}': putNote,
-  'DELETE /v1/notes/{id}': deleteNote,
+  'GET /notes': listNotes,
+  'GET /notes/{id}': getNote,
+  'PUT /notes/{id}': putNote,
+  'DELETE /notes/{id}': deleteNote,
 };
 
 export const route = async (
