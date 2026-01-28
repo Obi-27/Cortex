@@ -1,62 +1,48 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { error } from './http/responses';
+import { ErrorCodes } from './http/errors';
+
 import {
-  getNotes,
-  createNote,
-  getNoteById,
-  updateNote,
+  listNotes,
+  getNote,
+  putNote,
   deleteNote,
-} from './handlers/notes';
+} from './routes/notes';
 
-type RouteKey = `${string} ${string}`;
+type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
 
-const routes: Record<RouteKey, any> = {
-  'GET /notes': getNotes,
-  'POST /notes': createNote,
-  'GET /notes/{id}': getNoteById,
-  'PUT /notes/{id}': updateNote,
-  'DELETE /notes/{id}': deleteNote,
+const routes: Record<string, Handler> = {
+  'GET /v1/notes': listNotes,
+  'GET /v1/notes/{id}': getNote,
+  'PUT /v1/notes/{id}': putNote,
+  'DELETE /v1/notes/{id}': deleteNote,
 };
 
-function normalizePath(path: string): string {
-  // /notes/123 -> /notes/{id}
-  const parts = path.split('/').filter(Boolean);
-
-  if (parts.length === 2) {
-    return '/notes/{id}';
-  }
-
-  return `/${parts.join('/')}`;
-}
-
-export async function route(
+export const route = async (
   event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> {
-  const method = event.httpMethod;
-  const path = normalizePath(event.path);
-
-  const key = `${method} ${path}` as RouteKey;
-  const handler = routes[key];
-
-  if (!handler) {
-    return {
-      statusCode: 404,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: 'Route not found' }),
-    };
-  }
-
+): Promise<APIGatewayProxyResult> => {
   try {
+    const method = event.httpMethod;
+    const resource = event.resource;
+
+    const key = `${method} ${resource}`;
+
+    const handler = routes[key];
+    if (!handler) {
+      return error(
+        404,
+        ErrorCodes.NOT_FOUND,
+        `No route for ${method} ${resource}`
+      );
+    }
+
     return await handler(event);
-  } catch (error) {
-    console.error(error);
-    return {
-      statusCode: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ message: 'Internal server error' }),
-    };
+  } catch (err) {
+    console.error('Unhandled error', err);
+    return error(
+      500,
+      ErrorCodes.INTERNAL_ERROR,
+      'Internal server error'
+    );
   }
-}
+};
