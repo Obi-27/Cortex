@@ -1,13 +1,13 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { error } from './http/responses';
-import { ErrorCodes } from './http/errors';
+import { error } from './http/responses.js';
+import { ErrorCodes } from './http/errors.js';
 
 import {
   listNotes,
   getNote,
   putNote,
   deleteNote,
-} from './routes/notes';
+} from './routes/notes.js';
 
 type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
 

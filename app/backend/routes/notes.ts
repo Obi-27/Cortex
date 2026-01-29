@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { ok } from '../http/responses';
+import { ok } from '../http/responses.js';
 
 export const listNotes = async (
   _event: APIGatewayProxyEvent
