@@ -5,16 +5,19 @@ import { ErrorCodes } from './http/errors.js';
 import {
   listNotes,
   getNote,
-  putNote,
+  createNote,
   deleteNote,
+  updateNote,
 } from './routes/notes.js';
 
 type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
 
 const routes: Record<string, Handler> = {
   'GET /notes': listNotes,
+  'POST /notes': createNote,
+
   'GET /notes/{id}': getNote,
-  'PUT /notes/{id}': putNote,
+  'PUT /notes/{id}': updateNote,
   'DELETE /notes/{id}': deleteNote,
 };
 
