@@ -5,6 +5,8 @@ export const ErrorCodes = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   FORBIDDEN: 'FORBIDDEN',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  PRECONDITION_REQUIRED: 'PRECONDITION_REQUIRED',
+  ETAG_MISMATCH: 'ETAG_MISMATCH',
 } as const;
 
 export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];

@@ -18,8 +18,16 @@ export const getNote = async (
   }
 
   try {
-    const note = await s3.getNote(id);
-    return ok(note);
+    const { note, etag } = await s3.getNote(id);
+    
+    return {
+      statusCode: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        ETag: etag,
+      },
+      body: JSON.stringify({ ok: true, data: note }),
+    };
   } catch {
     return error(404, ErrorCodes.NOT_FOUND, 'Note not found');
   }
@@ -45,39 +53,97 @@ export const createNote = async (
     updatedAt: now,
   };
 
-  await s3.putNote(id, note);
-  return created(note);
+  const { etag } = await s3.createNote(id, note);
+
+  return {
+    ...created(note),
+    headers: {
+      ETag: etag ?? '',
+    },
+  };
 };
 
 export const updateNote = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
+  const ifMatch = event.headers['If-Match'] || event.headers['if-match'];
+
   if (!id || !event.body) {
     return error(400, ErrorCodes.BAD_REQUEST, 'Invalid request');
   }
 
-  const { title, content } = JSON.parse(event.body);
+  if (!ifMatch) {
+    return error(
+      428,
+      ErrorCodes.PRECONDITION_REQUIRED,
+      'Missing If-Match header'
+    );
+  }
+
+  const payload = JSON.parse(event.body);
 
   const note = {
+    ...payload,
     id,
-    title,
-    content,
     updatedAt: new Date().toISOString(),
   };
 
-  await s3.putNote(id, note);
-  return ok(note);
+  try {
+    const { etag } = await s3.updateNote(id, note, ifMatch);
+
+    return {
+      ...ok(note),
+      headers: {
+        ETag: etag ?? '',
+      },
+    };
+  } catch (err) {
+    if ((err as Error).message === 'ETAG_MISMATCH') {
+      return error(
+        412,
+        ErrorCodes.CONFLICT,
+        'Note was modified elsewhere'
+      );
+    }
+
+    throw err;
+  }
 };
 
 export const deleteNote = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
+  const ifMatch = event.headers['If-Match'] || event.headers['if-match'];
+
   if (!id) {
     return error(400, ErrorCodes.BAD_REQUEST, 'Missing note id');
   }
 
-  await s3.deleteNote(id);
-  return ok({ id });
+  if (!ifMatch) {
+    return error(
+      428,
+      ErrorCodes.PRECONDITION_REQUIRED,
+      'Missing If-Match header'
+    );
+  }
+
+  try {
+    await s3.deleteNote(id, ifMatch);
+    return {
+      statusCode: 204,
+      body: '',
+    };
+  } catch (err) {
+    if ((err as Error).message === 'ETAG_MISMATCH') {
+      return error(
+        412,
+        ErrorCodes.CONFLICT,
+        'Note was modified elsewhere'
+      );
+    }
+
+    throw err;
+  }
 };
