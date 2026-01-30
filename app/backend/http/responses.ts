@@ -1,5 +1,5 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
-import type { ErrorCode } from './errors';
+import type { ErrorCode } from './errors.js';
 
 export const json = (
   statusCode: number,

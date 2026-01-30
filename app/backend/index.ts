@@ -2,7 +2,7 @@ import type {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
 } from 'aws-lambda';
-import { route } from './router';
+import { route } from './router.js';
 
 export const handler = async (
   event: APIGatewayProxyEvent

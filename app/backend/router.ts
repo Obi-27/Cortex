@@ -1,20 +1,23 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import { error } from './http/responses';
-import { ErrorCodes } from './http/errors';
+import { error } from './http/responses.js';
+import { ErrorCodes } from './http/errors.js';
 
 import {
   listNotes,
   getNote,
-  putNote,
+  createNote,
   deleteNote,
-} from './routes/notes';
+  updateNote,
+} from './routes/notes.js';
 
 type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
 
 const routes: Record<string, Handler> = {
   'GET /notes': listNotes,
+  'POST /notes': createNote,
+
   'GET /notes/{id}': getNote,
-  'PUT /notes/{id}': putNote,
+  'PUT /notes/{id}': updateNote,
   'DELETE /notes/{id}': deleteNote,
 };
 
