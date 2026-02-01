@@ -8,6 +8,9 @@ import {
   createNote,
   deleteNote,
   updateNote,
+  getNoteHistory,
+  getNoteVersion,
+  restoreNoteVersion,
 } from './routes/notes.js';
 
 type Handler = (event: APIGatewayProxyEvent) => Promise<APIGatewayProxyResult>;
@@ -19,6 +22,10 @@ const routes: Record<string, Handler> = {
   'GET /notes/{id}': getNote,
   'PUT /notes/{id}': updateNote,
   'DELETE /notes/{id}': deleteNote,
+
+  'GET /notes/{id}/history': getNoteHistory,
+  'GET /notes/{id}/versions/{versionId}': getNoteVersion,
+  'POST /notes/{id}/restore/{versionId}': restoreNoteVersion
 };
 
 export const route = async (

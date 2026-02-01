@@ -4,6 +4,7 @@ import {
   GetObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
+  ListObjectVersionsCommand,
 } from '@aws-sdk/client-s3';
 
 const client = new S3Client({});
@@ -95,6 +96,73 @@ export const createNote = async (id: string, note: object) => {
       Body: JSON.stringify(note),
       ContentType: 'application/json',
       IfNoneMatch: '*', // fail if object already exists
+    })
+  );
+
+  return {
+    etag: res.ETag?.replace(/"/g, ''),
+  };
+};
+
+export const listNoteVersions = async (id: string) => {
+  const res = await client.send(
+    new ListObjectVersionsCommand({
+      Bucket: BUCKET,
+      Prefix: `${PREFIX}${id}.json`,
+    })
+  );
+
+  const versions = res.Versions ?? [];
+
+  return versions.map(v => ({
+    versionId: v.VersionId!,
+    etag: v.ETag?.replace(/"/g, ''),
+    lastModified: v.LastModified?.toISOString(),
+    isLatest: v.IsLatest,
+    size: v.Size,
+  }));
+};
+
+export const getNoteVersion = async (
+  id: string,
+  versionId: string
+) => {
+  const res = await client.send(
+    new GetObjectCommand({
+      Bucket: BUCKET,
+      Key: `${PREFIX}${id}.json`,
+      VersionId: versionId,
+    })
+  );
+
+  const body = await res.Body!.transformToString();
+
+  return {
+    note: JSON.parse(body),
+    etag: res.ETag?.replace(/"/g, ''),
+    versionId,
+  };
+};
+
+export const restoreNoteVersion = async (
+  id: string,
+  versionId: string
+) => {
+  const old = await getNoteVersion(id, versionId);
+
+  const now = new Date().toISOString();
+
+  const restored = {
+    ...old.note,
+    updatedAt: now,
+  };
+
+  const res = await client.send(
+    new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: `${PREFIX}${id}.json`,
+      Body: JSON.stringify(restored),
+      ContentType: 'application/json',
     })
   );
 
