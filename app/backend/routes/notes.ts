@@ -147,3 +147,69 @@ export const deleteNote = async (
     throw err;
   }
 };
+
+export const getNoteHistory = async (event: APIGatewayProxyEvent) => {
+  const id = event.pathParameters?.id;
+
+  if (!id) {
+    return error(400, ErrorCodes.BAD_REQUEST, 'Missing note id');
+  }
+
+  const versions = await s3.listNoteVersions(id);
+
+  return ok({
+    id,
+    versions,
+  });
+};
+
+export const getNoteVersion = async (
+  event: APIGatewayProxyEvent
+) => {
+  const { id, versionId } = event.pathParameters ?? {};
+
+  if (!id || !versionId) {
+    return error(400, ErrorCodes.BAD_REQUEST, 'Missing parameters');
+  }
+
+  const result = await s3.getNoteVersion(id, versionId);
+
+  return ok({
+    id,
+    'note': result.note,
+    'ETag': result.etag,
+  });
+};
+
+export const restoreNoteVersion = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  const id = event.pathParameters?.id;
+  const versionId = event.pathParameters?.versionId;
+
+  if (!id || !versionId) {
+    return error(
+      400,
+      ErrorCodes.BAD_REQUEST,
+      'Missing note id or versionId'
+    );
+  }
+
+  try {
+    const result = await s3.restoreNoteVersion(id, versionId);
+
+    return ok({
+        id,
+        restoredFromVersionId: versionId,
+        ETag: result.etag,
+      });
+  } catch (err) {
+    console.error('Restore failed', err);
+
+    return error(
+      500,
+      ErrorCodes.INTERNAL_ERROR,
+      'Failed to restore note version'
+    );
+  }
+};

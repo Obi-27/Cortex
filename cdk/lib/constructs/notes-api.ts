@@ -39,5 +39,19 @@ export class NotesApi extends Construct {
     noteById.addMethod('GET', lambdaIntegration);
     noteById.addMethod('PUT', lambdaIntegration);
     noteById.addMethod('DELETE', lambdaIntegration);
+
+    // /notes/{id}/history
+    const history = noteById.addResource('history');
+    history.addMethod('GET', lambdaIntegration);
+
+    // /notes/{id}/versions/{versionId}
+    const versionsById = noteById.addResource('versions');
+    const versionById = versionsById.addResource('{versionId}');
+    versionById.addMethod('GET', lambdaIntegration);
+
+    // /notes/{id}/restore/{versionId}
+    const restoreById = noteById.addResource('restore');
+    const restoreVersionById = restoreById.addResource('{versionId}');
+    restoreVersionById.addMethod('POST', lambdaIntegration);
   }
 }
