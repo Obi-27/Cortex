@@ -23,15 +23,18 @@ jobs:
           cd cdk && npm ci
           cd ./../app/backend && npm ci
 
-      - name: Lint
+      - name: Lint Backend
         run: npm run lint
+        working-directory: app/backend
 
-      - name: Typecheck
+      - name: Typecheck Backend
         run: npm run typecheck
+        working-directory: app/backend
 
-      - name: Tests
-        run: npm test
+      - name: Test Backend
+        run: npm run test
+        working-directory: app/backend
 
       - name: CDK Synth
-        working-directory: cdk
         run: npx cdk synth
+        working-directory: cdk
