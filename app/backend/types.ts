@@ -1,5 +1,5 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export type Handler = (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ) => Promise<APIGatewayProxyResult>;

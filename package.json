@@ -15,9 +15,9 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
-    "lint": "exit 0",
-    "typecheck": "exit 0",
-    "test": "exit 0",
+    "lint": "cd app/backend && npm run lint",
+    "typecheck": "cd app/backend && npm run typecheck",
+    "test": "cd app/backend && npm run test",
     "build": "cd app/backend && npm run build"
   }
 }

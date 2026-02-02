@@ -1,10 +1,11 @@
 import type { APIGatewayProxyResult } from 'aws-lambda';
+
 import type { ErrorCode } from './errors.js';
 
 export const json = (
   statusCode: number,
   body: unknown,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): APIGatewayProxyResult => ({
   statusCode,
   headers: {
@@ -29,7 +30,7 @@ export const noContent = (): APIGatewayProxyResult => ({
 export const error = (
   statusCode: number,
   code: ErrorCode,
-  message: string
+  message: string,
 ): APIGatewayProxyResult =>
   json(statusCode, {
     ok: false,

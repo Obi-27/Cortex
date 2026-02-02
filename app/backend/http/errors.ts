@@ -9,4 +9,4 @@ export const ErrorCodes = {
   ETAG_MISMATCH: 'ETAG_MISMATCH',
 } as const;
 
-export type ErrorCode = typeof ErrorCodes[keyof typeof ErrorCodes];
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];

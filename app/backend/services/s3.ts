@@ -15,7 +15,7 @@ const PREFIX = 'notes/';
 export const updateNote = async (
   id: string,
   note: object,
-  expectedEtag: string
+  expectedEtag: string,
 ) => {
   try {
     const res = await client.send(
@@ -25,14 +25,14 @@ export const updateNote = async (
         Body: JSON.stringify(note),
         ContentType: 'application/json',
         IfMatch: expectedEtag, // let S3 enforce concurrency
-      })
+      }),
     );
 
     return {
       etag: res.ETag?.replace(/"/g, ''),
     };
-  } catch (err: any) {
-    if (err.name === 'PreconditionFailed') {
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === 'PreconditionFailed') {
       throw new Error('ETAG_MISMATCH');
     }
     throw err;
@@ -44,7 +44,7 @@ export const getNote = async (id: string) => {
     new GetObjectCommand({
       Bucket: BUCKET,
       Key: `${PREFIX}${id}.json`,
-    })
+    }),
   );
 
   const body = await res.Body!.transformToString();
@@ -54,20 +54,17 @@ export const getNote = async (id: string) => {
   };
 };
 
-export const deleteNote = async (
-  id: string,
-  expectedEtag: string
-) => {
+export const deleteNote = async (id: string, expectedEtag: string) => {
   try {
     await client.send(
       new DeleteObjectCommand({
         Bucket: BUCKET,
         Key: `${PREFIX}${id}.json`,
         IfMatch: expectedEtag, // enforce concurrency
-      })
+      }),
     );
-  } catch (err: any) {
-    if (err.name === 'PreconditionFailed') {
+  } catch (err: unknown) {
+    if (err instanceof Error && err.name === 'PreconditionFailed') {
       throw new Error('ETAG_MISMATCH');
     }
     throw err;
@@ -79,13 +76,15 @@ export const listNotes = async () => {
     new ListObjectsV2Command({
       Bucket: BUCKET,
       Prefix: PREFIX,
-    })
+    }),
   );
 
-  return res.Contents?.map(obj => ({
-    id: obj.Key!.replace(PREFIX, '').replace('.json', ''),
-    updatedAt: obj.LastModified?.toISOString(),
-  })) ?? [];
+  return (
+    res.Contents?.map((obj) => ({
+      id: obj.Key!.replace(PREFIX, '').replace('.json', ''),
+      updatedAt: obj.LastModified?.toISOString(),
+    })) ?? []
+  );
 };
 
 export const createNote = async (id: string, note: object) => {
@@ -96,7 +95,7 @@ export const createNote = async (id: string, note: object) => {
       Body: JSON.stringify(note),
       ContentType: 'application/json',
       IfNoneMatch: '*', // fail if object already exists
-    })
+    }),
   );
 
   return {
@@ -109,12 +108,12 @@ export const listNoteVersions = async (id: string) => {
     new ListObjectVersionsCommand({
       Bucket: BUCKET,
       Prefix: `${PREFIX}${id}.json`,
-    })
+    }),
   );
 
   const versions = res.Versions ?? [];
 
-  return versions.map(v => ({
+  return versions.map((v) => ({
     versionId: v.VersionId!,
     etag: v.ETag?.replace(/"/g, ''),
     lastModified: v.LastModified?.toISOString(),
@@ -123,16 +122,13 @@ export const listNoteVersions = async (id: string) => {
   }));
 };
 
-export const getNoteVersion = async (
-  id: string,
-  versionId: string
-) => {
+export const getNoteVersion = async (id: string, versionId: string) => {
   const res = await client.send(
     new GetObjectCommand({
       Bucket: BUCKET,
       Key: `${PREFIX}${id}.json`,
       VersionId: versionId,
-    })
+    }),
   );
 
   const body = await res.Body!.transformToString();
@@ -144,10 +140,7 @@ export const getNoteVersion = async (
   };
 };
 
-export const restoreNoteVersion = async (
-  id: string,
-  versionId: string
-) => {
+export const restoreNoteVersion = async (id: string, versionId: string) => {
   const old = await getNoteVersion(id, versionId);
 
   const now = new Date().toISOString();
@@ -163,7 +156,7 @@ export const restoreNoteVersion = async (
       Key: `${PREFIX}${id}.json`,
       Body: JSON.stringify(restored),
       ContentType: 'application/json',
-    })
+    }),
   );
 
   return {

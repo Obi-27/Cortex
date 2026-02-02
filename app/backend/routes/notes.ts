@@ -1,8 +1,9 @@
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
+import { randomUUID } from 'crypto';
+
 import { ok, created, error } from '../http/responses.js';
 import { ErrorCodes } from '../http/errors.js';
 import * as s3 from '../services/s3.js';
-import { randomUUID } from 'crypto';
 
 export const listNotes = async (): Promise<APIGatewayProxyResult> => {
   const notes = await s3.listNotes();
@@ -10,7 +11,7 @@ export const listNotes = async (): Promise<APIGatewayProxyResult> => {
 };
 
 export const getNote = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
   if (!id) {
@@ -19,7 +20,7 @@ export const getNote = async (
 
   try {
     const { note, etag } = await s3.getNote(id);
-    
+
     return {
       statusCode: 200,
       headers: {
@@ -34,7 +35,7 @@ export const getNote = async (
 };
 
 export const createNote = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   if (!event.body) {
     return error(400, ErrorCodes.BAD_REQUEST, 'Missing request body');
@@ -64,7 +65,7 @@ export const createNote = async (
 };
 
 export const updateNote = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
   const ifMatch = event.headers['If-Match'] || event.headers['if-match'];
@@ -77,7 +78,7 @@ export const updateNote = async (
     return error(
       428,
       ErrorCodes.PRECONDITION_REQUIRED,
-      'Missing If-Match header'
+      'Missing If-Match header',
     );
   }
 
@@ -100,11 +101,7 @@ export const updateNote = async (
     };
   } catch (err) {
     if ((err as Error).message === 'ETAG_MISMATCH') {
-      return error(
-        412,
-        ErrorCodes.CONFLICT,
-        'Note was modified elsewhere'
-      );
+      return error(412, ErrorCodes.CONFLICT, 'Note was modified elsewhere');
     }
 
     throw err;
@@ -112,7 +109,7 @@ export const updateNote = async (
 };
 
 export const deleteNote = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
   const ifMatch = event.headers['If-Match'] || event.headers['if-match'];
@@ -125,7 +122,7 @@ export const deleteNote = async (
     return error(
       428,
       ErrorCodes.PRECONDITION_REQUIRED,
-      'Missing If-Match header'
+      'Missing If-Match header',
     );
   }
 
@@ -137,11 +134,7 @@ export const deleteNote = async (
     };
   } catch (err) {
     if ((err as Error).message === 'ETAG_MISMATCH') {
-      return error(
-        412,
-        ErrorCodes.CONFLICT,
-        'Note was modified elsewhere'
-      );
+      return error(412, ErrorCodes.CONFLICT, 'Note was modified elsewhere');
     }
 
     throw err;
@@ -163,9 +156,7 @@ export const getNoteHistory = async (event: APIGatewayProxyEvent) => {
   });
 };
 
-export const getNoteVersion = async (
-  event: APIGatewayProxyEvent
-) => {
+export const getNoteVersion = async (event: APIGatewayProxyEvent) => {
   const { id, versionId } = event.pathParameters ?? {};
 
   if (!id || !versionId) {
@@ -176,40 +167,36 @@ export const getNoteVersion = async (
 
   return ok({
     id,
-    'note': result.note,
-    'ETag': result.etag,
+    note: result.note,
+    ETag: result.etag,
   });
 };
 
 export const restoreNoteVersion = async (
-  event: APIGatewayProxyEvent
+  event: APIGatewayProxyEvent,
 ): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters?.id;
   const versionId = event.pathParameters?.versionId;
 
   if (!id || !versionId) {
-    return error(
-      400,
-      ErrorCodes.BAD_REQUEST,
-      'Missing note id or versionId'
-    );
+    return error(400, ErrorCodes.BAD_REQUEST, 'Missing note id or versionId');
   }
 
   try {
     const result = await s3.restoreNoteVersion(id, versionId);
 
     return ok({
-        id,
-        restoredFromVersionId: versionId,
-        ETag: result.etag,
-      });
+      id,
+      restoredFromVersionId: versionId,
+      ETag: result.etag,
+    });
   } catch (err) {
     console.error('Restore failed', err);
 
     return error(
       500,
       ErrorCodes.INTERNAL_ERROR,
-      'Failed to restore note version'
+      'Failed to restore note version',
     );
   }
 };
