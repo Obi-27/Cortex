@@ -31,7 +31,7 @@ const apiEvent = (
     multiValueQueryStringParameters: null,
     pathParameters: null,
     stageVariables: null,
-    requestContext: {} as any,
+    requestContext: {} as APIGatewayProxyEvent['requestContext'],
     body: null,
     isBase64Encoded: false,
     ...overrides,
@@ -44,7 +44,7 @@ describe('router', () => {
 
   // route matches
   it('routes GET /notes to listNotes', async () => {
-    (notes.listNotes as any).mockResolvedValue({
+    vi.mocked(notes.listNotes).mockResolvedValue({
       statusCode: 200,
       body: 'ok',
     });
@@ -57,7 +57,7 @@ describe('router', () => {
 
   // Route with path param
   it('routes GET /notes/{id} to getNote', async () => {
-    (notes.getNote as any).mockResolvedValue({
+    vi.mocked(notes.getNote).mockResolvedValue({
       statusCode: 200,
       body: 'note',
     });
@@ -82,7 +82,8 @@ describe('router', () => {
 
   //Handler throws → 500
   it('returns 500 if handler throws', async () => {
-    (notes.listNotes as any).mockRejectedValue(
+    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    vi.mocked(notes.listNotes).mockRejectedValue(
       new Error('boom')
     );
 
@@ -92,6 +93,8 @@ describe('router', () => {
     expect(JSON.parse(res.body).error.code).toBe(
       'INTERNAL_ERROR'
     );
+
+    consoleErrorSpy.mockRestore();
   });
 });
 
