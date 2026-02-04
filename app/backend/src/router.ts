@@ -46,7 +46,8 @@ export const route = async (
       );
     }
 
-    return await handler(event);
+    const result = await handler(event);
+    return result;
   } catch (err) {
     console.error('Unhandled error', err);
     return error(500, ErrorCodes.INTERNAL_ERROR, 'Internal server error');

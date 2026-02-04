@@ -8,7 +8,7 @@
     "lint": "eslint . --ext .ts",
     "typecheck": "npx tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,js,json,md}\"",
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "npx vitest run"
   },
   "keywords": [],
   "author": "",
@@ -23,7 +23,8 @@
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-import": "^2.32.0",
     "prettier": "^3.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.978.0",
