@@ -3,21 +3,23 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 
 import { createEditorState } from "./core/state/createEditorState";
-import { applyPatch } from "./core/patches/applyPatch";
+import { dispatchCommand } from "./core/commands/dispatcher";
+import { insertParagraphCommand } from "./core/commands/insertParagraph";
 
-const state = createEditorState();
+let state = createEditorState();
 
-const next = applyPatch(state, {
-  type: "insertBlock",
-  index: 1,
-  block: {
-    id: "block-2",
-    type: "paragraph",
-    content: [{ type: "text", value: "Second block" }]
-  }
-});
+state = dispatchCommand(state, insertParagraphCommand);
+state = dispatchCommand(state, insertParagraphCommand);
 
-console.log(next.document.blocks);
+console.log(state.document.blocks.length); // 3
+console.log(state.history.past.length);    // 2
+
+import { ToolManager } from "./core/tools/ToolManager";
+import { CoreEditingTool } from "./tools/core/CoreEditingTool";
+
+export const toolManager = new ToolManager();
+toolManager.register(CoreEditingTool);
+
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -38,5 +38,7 @@ export function invertPatch(
         type: "setSelection",
         selection: prevSelection ?? null
       };
+      default:
+        throw new Error(`Unknown patch type: ${patch.type}`);
   }
 }

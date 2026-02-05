@@ -56,6 +56,13 @@ export function applyPatch(
       };
     }
 
+    case "batch": {
+  return patch.patches.reduce(
+    (s, p) => applyPatch(s, p),
+    state
+  );
+}
+
     default:
       return state;
   }

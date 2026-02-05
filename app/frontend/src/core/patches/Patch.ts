@@ -5,7 +5,13 @@ export type Patch =
   | InsertBlockPatch
   | UpdateBlockPatch
   | DeleteBlockPatch
-  | SetSelectionPatch;
+  | SetSelectionPatch
+  | BatchPatch
+
+export interface BatchPatch {
+  type: "batch";
+  patches: Patch[];
+}
 
 export interface InsertBlockPatch {
   type: "insertBlock";
