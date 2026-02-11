@@ -4,10 +4,10 @@ import type { Command } from "../commands/Command";
 import type { EditorInputEvent } from "./EditorInputEvent";
 
 export class ToolManager {
-  private tools: Tool[] = [];
+  private tools: Tool[];
 
-  register(tool: Tool) {
-    this.tools.push(tool);
+  constructor(tools: Tool[] = []) {
+    this.tools = [...tools];
   }
 
   getActiveTools(state: EditorState): Tool[] {

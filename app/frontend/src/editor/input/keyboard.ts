@@ -22,7 +22,7 @@ export function handleKeyDown(
   if (!command) return;
 
   event.preventDefault();
-
+  console.log(command)
   const next = dispatchCommand(state, command);
   setState(next);
 }

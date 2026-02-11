@@ -1,10 +1,12 @@
 import type { Patch } from "./Patch";
 import type { BlockNode } from "../state/DocumentState";
+import type { SelectionState } from "../state/SelectionState";
 
 export function invertPatch(
   patch: Patch,
   prevBlock?: BlockNode,
-  prevSelection?: any
+  prevBlockIndex?: number,
+  prevSelection?: SelectionState
 ): Patch {
   switch (patch.type) {
     case "insertBlock":
@@ -20,7 +22,7 @@ export function invertPatch(
       return {
         type: "insertBlock",
         block: prevBlock,
-        index: 0 // index must be supplied by caller
+        index: prevBlockIndex ?? 0
       };
 
     case "updateBlock":
@@ -38,7 +40,8 @@ export function invertPatch(
         type: "setSelection",
         selection: prevSelection ?? null
       };
-      default:
-        throw new Error(`Unknown patch type: ${patch.type}`);
+
+    default:
+      throw new Error(`Unknown patch type: ${(patch as Patch).type}`);
   }
 }
