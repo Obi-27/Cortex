@@ -7,5 +7,6 @@ export interface CommandContext {
 
 export interface Command {
   id: string;
+  skipHistory?: boolean;
   run(ctx: CommandContext): Patch | Patch[] | null;
 }

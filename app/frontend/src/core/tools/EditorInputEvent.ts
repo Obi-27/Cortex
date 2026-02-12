@@ -1,5 +1,6 @@
 export type EditorInputEvent =
-  | KeyInputEvent;
+  | KeyInputEvent
+  | BeforeInputEvent;
 
 export interface KeyInputEvent {
   kind: "key";
@@ -8,4 +9,10 @@ export interface KeyInputEvent {
   meta: boolean;
   ctrl: boolean;
   alt: boolean;
+}
+
+export interface BeforeInputEvent {
+  kind: "beforeinput";
+  inputType: string;
+  data: string | null;
 }

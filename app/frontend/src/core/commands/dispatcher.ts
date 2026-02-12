@@ -106,6 +106,10 @@ export function dispatchCommand(
   const selectionBefore = state.selection;
   const { nextState, historyPatches, inversePatches } = applyAndRecordPatches(state, patches);
 
+  if (command.skipHistory) {
+    return nextState;
+  }
+
   const entry: HistoryEntry = {
     patch: { type: "batch", patches: historyPatches },
     inverse: { type: "batch", patches: inversePatches },
