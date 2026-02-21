@@ -26,6 +26,7 @@ function applyAndRecordPatches(
     let prevBlock: BlockNode | undefined;
     let prevBlockIndex: number | undefined;
     let prevSelection: SelectionState | undefined;
+    let prevStoredMarks: typeof nextState.storedMarks = undefined;
 
     if (patch.type === "updateBlock" || patch.type === "deleteBlock") {
       prevBlockIndex = nextState.document.blocks.findIndex(
@@ -40,9 +41,13 @@ function applyAndRecordPatches(
       prevSelection = nextState.selection;
     }
 
+    if (patch.type === "setStoredMarks") {
+      prevStoredMarks = nextState.storedMarks;
+    }
+
     nextState = applyPatch(nextState, patch);
 
-    const inverse = invertPatch(patch, prevBlock, prevBlockIndex, prevSelection);
+    const inverse = invertPatch(patch, prevBlock, prevBlockIndex, prevSelection, prevStoredMarks);
 
     historyPatches.push(patch);
     inversePatches.unshift(inverse);
@@ -106,19 +111,25 @@ export function dispatchCommand(
   const selectionBefore = state.selection;
   const { nextState, historyPatches, inversePatches } = applyAndRecordPatches(state, patches);
 
+  // Auto-clear storedMarks for any command that isn't a mark toggle
+  let finalState = nextState;
+  if (!command.id.startsWith("core.toggleMark") && finalState.storedMarks !== null) {
+    finalState = { ...finalState, storedMarks: null };
+  }
+
   if (command.skipHistory) {
-    return nextState;
+    return finalState;
   }
 
   const entry: HistoryEntry = {
     patch: { type: "batch", patches: historyPatches },
     inverse: { type: "batch", patches: inversePatches },
     selectionBefore,
-    selectionAfter: nextState.selection
+    selectionAfter: finalState.selection
   };
 
   return {
-    ...nextState,
+    ...finalState,
     history: {
       past: [...state.history.past, entry],
       future: []

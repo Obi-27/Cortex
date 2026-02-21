@@ -16,6 +16,7 @@ export function createEditorState(): EditorState {
     history: {
       past: [],
       future: []
-    }
+    },
+    storedMarks: null
   };
 }

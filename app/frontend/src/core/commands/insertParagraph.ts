@@ -1,6 +1,7 @@
 import type { Command } from "./Command";
 import type { BlockNode } from "../state/DocumentState";
 import type { Patch } from "../patches/Patch";
+import { sliceContent, flattenContent } from "../text/inlineNodes";
 
 export const insertParagraphCommand: Command = {
   id: "core.insertParagraph",
@@ -13,24 +14,24 @@ export const insertParagraphCommand: Command = {
       if (blockIndex < 0) return null;
 
       const block = state.document.blocks[blockIndex];
-      const fullText = block.content.map(n => n.value).join("");
+      const totalLen = flattenContent(block.content).length;
       const start = Math.min(sel.anchor, sel.focus);
       const end = Math.max(sel.anchor, sel.focus);
 
-      const textBefore = fullText.slice(0, start);
-      const textAfter = fullText.slice(end);
+      const contentBefore = sliceContent(block.content, 0, start);
+      const contentAfter = sliceContent(block.content, end, totalLen);
 
       const newBlock: BlockNode = {
         id: crypto.randomUUID(),
         type: "paragraph",
-        content: [{ type: "text", value: textAfter }]
+        content: contentAfter
       };
 
       const patches: Patch[] = [
         {
           type: "updateBlock",
           blockId: block.id,
-          content: [{ type: "text", value: textBefore }]
+          content: contentBefore
         },
         {
           type: "insertBlock",

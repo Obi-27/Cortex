@@ -1,5 +1,6 @@
 import type { Command } from "./Command";
 import type { Patch } from "../patches/Patch";
+import { spliceContent, mergeAdjacentNodes } from "../text/inlineNodes";
 
 export const deleteBackwardCommand: Command = {
   id: "core.deleteBackward",
@@ -12,15 +13,14 @@ export const deleteBackwardCommand: Command = {
     if (blockIndex < 0) return null;
 
     const block = blocks[blockIndex];
-    const fullText = block.content.map(n => n.value).join("");
     const start = Math.min(sel.anchor, sel.focus);
     const end = Math.max(sel.anchor, sel.focus);
 
     // Range selection: delete the selected range
     if (start !== end) {
-      const newText = fullText.slice(0, start) + fullText.slice(end);
+      const newContent = spliceContent(block.content, start, end, []);
       const patches: Patch[] = [
-        { type: "updateBlock", blockId: block.id, content: [{ type: "text", value: newText }] },
+        { type: "updateBlock", blockId: block.id, content: newContent },
         { type: "setSelection", selection: { kind: "text", blockId: block.id, anchor: start, focus: start } }
       ];
       return patches;
@@ -30,22 +30,21 @@ export const deleteBackwardCommand: Command = {
     if (start === 0) {
       if (blockIndex === 0) return null;
       const prevBlock = blocks[blockIndex - 1];
-      const prevText = prevBlock.content.map(n => n.value).join("");
-      const mergedText = prevText + fullText;
-      const cursorPos = prevText.length;
+      const prevLen = prevBlock.content.map(n => n.value).join("").length;
+      const mergedContent = mergeAdjacentNodes([...prevBlock.content, ...block.content]);
 
       const patches: Patch[] = [
-        { type: "updateBlock", blockId: prevBlock.id, content: [{ type: "text", value: mergedText }] },
+        { type: "updateBlock", blockId: prevBlock.id, content: mergedContent },
         { type: "deleteBlock", blockId: block.id },
-        { type: "setSelection", selection: { kind: "text", blockId: prevBlock.id, anchor: cursorPos, focus: cursorPos } }
+        { type: "setSelection", selection: { kind: "text", blockId: prevBlock.id, anchor: prevLen, focus: prevLen } }
       ];
       return patches;
     }
 
     // Normal: delete char before cursor
-    const newText = fullText.slice(0, start - 1) + fullText.slice(start);
+    const newContent = spliceContent(block.content, start - 1, start, []);
     const patches: Patch[] = [
-      { type: "updateBlock", blockId: block.id, content: [{ type: "text", value: newText }] },
+      { type: "updateBlock", blockId: block.id, content: newContent },
       { type: "setSelection", selection: { kind: "text", blockId: block.id, anchor: start - 1, focus: start - 1 } }
     ];
     return patches;

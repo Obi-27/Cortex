@@ -5,9 +5,10 @@ import type { Command } from "../core/commands/Command";
 import { dispatchCommand } from "../core/commands/dispatcher";
 import type { Tool } from "../core/tools/Tool";
 import { ToolManager } from "../core/tools/ToolManager";
+import { KeyboardShortcutsTool } from "../tools/core/KeyboardShortcutsTool";
 import { CoreEditingTool } from "../tools/core/CoreEditingTool";
 
-const defaultTools: Tool[] = [CoreEditingTool];
+const defaultTools: Tool[] = [KeyboardShortcutsTool, CoreEditingTool];
 
 interface EditorProviderProps {
   tools?: Tool[];

@@ -1,12 +1,13 @@
 import type { Patch } from "./Patch";
-import type { BlockNode } from "../state/DocumentState";
+import type { BlockNode, MarkType } from "../state/DocumentState";
 import type { SelectionState } from "../state/SelectionState";
 
 export function invertPatch(
   patch: Patch,
   prevBlock?: BlockNode,
   prevBlockIndex?: number,
-  prevSelection?: SelectionState
+  prevSelection?: SelectionState,
+  prevStoredMarks?: MarkType[] | null
 ): Patch {
   switch (patch.type) {
     case "insertBlock":
@@ -39,6 +40,12 @@ export function invertPatch(
       return {
         type: "setSelection",
         selection: prevSelection ?? null
+      };
+
+    case "setStoredMarks":
+      return {
+        type: "setStoredMarks",
+        marks: prevStoredMarks ?? null
       };
 
     default:

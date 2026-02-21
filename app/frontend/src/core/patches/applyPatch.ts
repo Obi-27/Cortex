@@ -56,6 +56,13 @@ export function applyPatch(
       };
     }
 
+    case "setStoredMarks": {
+      return {
+        ...state,
+        storedMarks: patch.marks
+      };
+    }
+
     case "batch": {
   return patch.patches.reduce(
     (s, p) => applyPatch(s, p),
