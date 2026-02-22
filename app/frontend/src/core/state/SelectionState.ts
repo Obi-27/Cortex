@@ -5,9 +5,10 @@ export type SelectionState =
 
 export interface TextSelection {
   kind: "text";
-  blockId: string;
-  anchor: number;
-  focus: number;
+  anchorBlockId: string;
+  anchorOffset: number;
+  focusBlockId: string;
+  focusOffset: number;
 }
 
 export interface BlockSelection {

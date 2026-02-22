@@ -1,11 +1,18 @@
-import type { BlockNode } from "../state/DocumentState";
+import type { BlockNode, MarkType } from "../state/DocumentState";
 import type { SelectionState } from "../state/SelectionState";
 
 export type Patch =
   | InsertBlockPatch
   | UpdateBlockPatch
   | DeleteBlockPatch
-  | SetSelectionPatch;
+  | SetSelectionPatch
+  | SetStoredMarksPatch
+  | BatchPatch
+
+export interface BatchPatch {
+  type: "batch";
+  patches: Patch[];
+}
 
 export interface InsertBlockPatch {
   type: "insertBlock";
@@ -27,4 +34,9 @@ export interface DeleteBlockPatch {
 export interface SetSelectionPatch {
   type: "setSelection";
   selection: SelectionState;
+}
+
+export interface SetStoredMarksPatch {
+  type: "setStoredMarks";
+  marks: MarkType[] | null;
 }

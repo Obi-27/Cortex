@@ -1,10 +1,14 @@
+import { EditorProvider } from "./editor/EditorProvider";
+import { EditorView } from "./editor/EditorView";
+import { ActiveMarksBar } from "./editor/ActiveMarksBar";
+
 function App() {
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Cortex Editor</h1>
-      <p>Editor bootstrapped.</p>
-    </div>
-  )
+    <EditorProvider>
+      <ActiveMarksBar />
+      <EditorView />
+    </EditorProvider>
+  );
 }
 
-export default App
+export default App;

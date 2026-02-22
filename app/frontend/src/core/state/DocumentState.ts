@@ -1,6 +1,9 @@
+export type MarkType = "bold" | "italic" | "code";
+
 export interface InlineNode {
   type: "text";
   value: string;
+  marks?: MarkType[];
 }
 
 export interface BlockNode {
