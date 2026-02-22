@@ -71,9 +71,10 @@ export function EditorView() {
       if (
         cur &&
         cur.kind === "text" &&
-        cur.blockId === textSel.blockId &&
-        cur.anchor === textSel.anchor &&
-        cur.focus === textSel.focus
+        cur.anchorBlockId === textSel.anchorBlockId &&
+        cur.anchorOffset === textSel.anchorOffset &&
+        cur.focusBlockId === textSel.focusBlockId &&
+        cur.focusOffset === textSel.focusOffset
       ) return;
 
       dispatch(createSetSelectionCommand(textSel));

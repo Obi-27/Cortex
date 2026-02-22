@@ -2,6 +2,7 @@ import type { Command } from "./Command";
 import type { Patch } from "../patches/Patch";
 import type { MarkType, InlineNode } from "../state/DocumentState";
 import { sliceContent, mergeAdjacentNodes, flattenContent, marksAt } from "../text/inlineNodes";
+import { isCollapsed, isSingleBlock } from "../selection/selectionHelpers";
 
 export function createToggleMarkCommand(mark: MarkType): Command {
   return {
@@ -10,21 +11,26 @@ export function createToggleMarkCommand(mark: MarkType): Command {
       const sel = state.selection;
       if (!sel || sel.kind !== "text") return null;
 
-      const block = state.document.blocks.find(b => b.id === sel.blockId);
-      if (!block) return null;
-
-      const start = Math.min(sel.anchor, sel.focus);
-      const end = Math.max(sel.anchor, sel.focus);
-
       // Collapsed selection: toggle mark in storedMarks
-      if (start === end) {
-        const current = state.storedMarks ?? marksAt(block.content, start);
+      if (isCollapsed(sel)) {
+        const block = state.document.blocks.find(b => b.id === sel.anchorBlockId);
+        if (!block) return null;
+        const current = state.storedMarks ?? marksAt(block.content, sel.anchorOffset);
         const hasMark = current.includes(mark);
         const next = hasMark
           ? current.filter(m => m !== mark)
           : [...current, mark];
         return { type: "setStoredMarks" as const, marks: next };
       }
+
+      // Only single-block mark toggling for now
+      if (!isSingleBlock(sel)) return null;
+
+      const block = state.document.blocks.find(b => b.id === sel.anchorBlockId);
+      if (!block) return null;
+
+      const start = Math.min(sel.anchorOffset, sel.focusOffset);
+      const end = Math.max(sel.anchorOffset, sel.focusOffset);
 
       const totalLen = flattenContent(block.content).length;
       const before = start > 0 ? sliceContent(block.content, 0, start) : [];
@@ -37,11 +43,9 @@ export function createToggleMarkCommand(mark: MarkType): Command {
       const toggled: InlineNode[] = selected.map(n => {
         const marks = n.marks?.length ? [...n.marks] : [];
         if (allHaveMark) {
-          // Remove mark
           const filtered = marks.filter(m => m !== mark);
           return { type: "text" as const, value: n.value, marks: filtered.length ? filtered : undefined };
         } else {
-          // Add mark
           if (!marks.includes(mark)) marks.push(mark);
           return { type: "text" as const, value: n.value, marks };
         }
@@ -51,7 +55,7 @@ export function createToggleMarkCommand(mark: MarkType): Command {
 
       const patches: Patch[] = [
         { type: "updateBlock", blockId: block.id, content: newContent },
-        { type: "setSelection", selection: { kind: "text", blockId: block.id, anchor: start, focus: end } }
+        { type: "setSelection", selection: { kind: "text", anchorBlockId: block.id, anchorOffset: start, focusBlockId: block.id, focusOffset: end } }
       ];
 
       return patches;

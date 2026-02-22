@@ -33,11 +33,15 @@ function resolveOffset(blockEl: HTMLElement, charOffset: number): { node: Node; 
 export function restoreSelectionToDOM(selection: SelectionState): void {
   if (!selection || selection.kind !== "text") return;
 
-  const blockEl = document.querySelector(`[data-block-id="${selection.blockId}"]`) as HTMLElement | null;
-  if (!blockEl) return;
+  const anchorBlockEl = document.querySelector(`[data-block-id="${selection.anchorBlockId}"]`) as HTMLElement | null;
+  const focusBlockEl = selection.anchorBlockId === selection.focusBlockId
+    ? anchorBlockEl
+    : document.querySelector(`[data-block-id="${selection.focusBlockId}"]`) as HTMLElement | null;
 
-  const anchorPos = resolveOffset(blockEl, selection.anchor);
-  const focusPos = resolveOffset(blockEl, selection.focus);
+  if (!anchorBlockEl || !focusBlockEl) return;
+
+  const anchorPos = resolveOffset(anchorBlockEl, selection.anchorOffset);
+  const focusPos = resolveOffset(focusBlockEl, selection.focusOffset);
   if (!anchorPos || !focusPos) return;
 
   const sel = document.getSelection();

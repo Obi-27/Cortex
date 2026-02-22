@@ -35,19 +35,23 @@ export function readSelectionFromDOM(): TextSelection | null {
   const anchorBlockId = findBlockId(sel.anchorNode);
   const focusBlockId = findBlockId(sel.focusNode);
 
-  // Only handle single-block text selections for now
-  if (!anchorBlockId || anchorBlockId !== focusBlockId) return null;
+  if (!anchorBlockId || !focusBlockId) return null;
 
-  const blockEl = document.querySelector(`[data-block-id="${anchorBlockId}"]`) as HTMLElement | null;
-  if (!blockEl) return null;
+  const anchorBlockEl = document.querySelector(`[data-block-id="${anchorBlockId}"]`) as HTMLElement | null;
+  const focusBlockEl = anchorBlockId === focusBlockId
+    ? anchorBlockEl
+    : document.querySelector(`[data-block-id="${focusBlockId}"]`) as HTMLElement | null;
 
-  const anchor = getCharOffset(blockEl, sel.anchorNode, sel.anchorOffset);
-  const focus = getCharOffset(blockEl, sel.focusNode, sel.focusOffset);
+  if (!anchorBlockEl || !focusBlockEl) return null;
+
+  const anchorOffset = getCharOffset(anchorBlockEl, sel.anchorNode, sel.anchorOffset);
+  const focusOffset = getCharOffset(focusBlockEl, sel.focusNode, sel.focusOffset);
 
   return {
     kind: "text",
-    blockId: anchorBlockId,
-    anchor,
-    focus
+    anchorBlockId,
+    anchorOffset,
+    focusBlockId,
+    focusOffset
   };
 }
